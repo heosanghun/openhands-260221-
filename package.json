@@ -1,0 +1,9 @@
+{
+  "name": "openhands-root",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix frontend install && npm --prefix frontend run build",
+    "test": "npm --prefix frontend test",
+    "lint": "npm --prefix frontend run lint"
+  }
+}
