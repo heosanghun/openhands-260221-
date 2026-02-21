@@ -9,6 +9,9 @@ class StartStackForgeBuildAction(Action):
     supabase_token: str
     cloudflare_token: str
     polar_api_key: str
+    github_token: str | None = None
+    gcp_project_id: str | None = None
+    gcp_credentials_json: str | None = None
     action: str = ActionType.START_STACKFORGE_BUILD
 
     def __str__(self) -> str:
