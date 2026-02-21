@@ -107,3 +107,6 @@ class ActionType(str, Enum):
 
     LOOP_RECOVERY = 'loop_recovery'
     """Recover dead loop."""
+
+    START_STACKFORGE_BUILD = 'start_stackforge_build'
+    """Starts the StackForge build process."""

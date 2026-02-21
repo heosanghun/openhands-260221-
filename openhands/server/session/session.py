@@ -43,6 +43,7 @@ from openhands.server.session.agent_session import AgentSession
 from openhands.server.session.conversation_init_data import ConversationInitData
 from openhands.storage.data_models.settings import Settings
 from openhands.storage.files import FileStore
+from openhands.events.action.stackforge import StartStackForgeBuildAction
 
 
 class WebSession:
@@ -322,6 +323,29 @@ class WebSession:
     def on_event(self, event: Event) -> None:
         asyncio.get_event_loop().run_until_complete(self._on_event(event))
 
+    async def _handle_stackforge_build(self, event: StartStackForgeBuildAction):
+        self.logger.info('--- STACKFORGE BUILD REQUEST RECEIVED ---')
+        self.logger.info(f'Project Name: {event.project_name}')
+        
+        # Change agent to stackforge_agent
+        if self.agent_session.controller:
+            # API 키 정보를 에이전트 상태 데이터에 저장
+            self.agent_session.controller.state.extra_data['stackforge_config'] = {
+                'project_name': event.project_name,
+                'supabase_token': event.supabase_token,
+                'cloudflare_token': event.cloudflare_token,
+                'polar_api_key': event.polar_api_key
+            }
+
+            from openhands.agenthub.stackforge_agent.stackforge_agent import StackForgeAgent
+            agent_config = self.config.get_agent_config('stackforge_agent')
+            new_agent = StackForgeAgent(agent_config, self.llm_registry)
+            self.agent_session.controller.agent = new_agent
+            self.logger.info(f'Changed agent to stackforge_agent for session {self.sid}')
+            
+            # Trigger the agent to start
+            await self.agent_session.controller.set_agent_state_to(AgentState.RUNNING)
+
     async def _on_event(self, event: Event) -> None:
         """Callback function for events that mainly come from the agent.
 
@@ -330,6 +354,10 @@ class WebSession:
         Args:
             event: The agent event (Observation or Action).
         """
+        if isinstance(event, StartStackForgeBuildAction):
+            await self._handle_stackforge_build(event)
+            return
+
         if isinstance(event, NullAction):
             return
         if isinstance(event, NullObservation):

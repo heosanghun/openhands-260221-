@@ -47,6 +47,9 @@ enum ActionType {
 
   // Views or updates the task list for task management.
   TASK_TRACKING = "task_tracking",
+
+  // Starts the StackForge build process.
+  START_STACKFORGE_BUILD = "start_stackforge_build",
 }
 
 export default ActionType;

@@ -1,5 +1,5 @@
 import { cn } from "#/utils/utils";
-import { ChatInterfaceWrapper } from "./chat-interface-wrapper";
+import { StackForgeDashboard } from "../../stack-forge/stack-forge-dashboard";
 import { ConversationTabContent } from "../conversation-tabs/conversation-tab-content/conversation-tab-content";
 import { ResizeHandle } from "../../../ui/resize-handle";
 import { useResizablePanels } from "#/hooks/use-resizable-panels";
@@ -65,9 +65,7 @@ export function ConversationMain() {
               : undefined
           }
         >
-          <ChatInterfaceWrapper
-            isRightPanelShown={!isMobile && isRightPanelShown}
-          />
+          <StackForgeDashboard />
         </div>
 
         {/* Resize Handle - only shown on desktop when right panel is visible */}
