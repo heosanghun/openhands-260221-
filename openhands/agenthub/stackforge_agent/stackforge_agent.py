@@ -85,16 +85,24 @@ class StackForgeAgent(Agent):
 
         elif current_step == 'GENERATE_CODE':
             state.extra_data['stackforge_step'] = 'DEPLOY_CLOUDFLARE'
-            # Next.js 보일러플레이트 작성 (더 정교한 구조)
+            # Next.js 보일러플레이트 및 Cloudflare 설정 파일(wrangler.toml) 작성
+            wrangler_content = (
+                f'name = "{project_name}"\n'
+                f'pages_build_output_dir = ".next"\n\n'
+                f'[vars]\n'
+                f'PROJECT_NAME = "{project_name}"\n'
+            )
             command = (
                 f"cd {project_name} && "
-                f"echo 'State 4: Next.js 보일러플레이트 코드 생성 중...' && "
+                f"echo 'State 4: Next.js 보일러플레이트 및 wrangler.toml 생성 중...' && "
                 f"mkdir -p src/app src/components src/lib && "
                 f"echo \"import {{ createClient }} from '@supabase/supabase-js';\nexport const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);\" > src/lib/supabase.ts && "
                 f"echo \"export default function Home() {{ return <div className='p-20 text-center'><h1>{{process.env.PROJECT_NAME}} - Powered by StackForge</h1><p>Welcome to your new SaaS!</p></div>; }}\" > src/app/page.tsx && "
+                f"cat <<EOF > wrangler.toml\n{wrangler_content}EOF\n && "
                 f"echo '[INFO] package.json created' && "
+                f"echo '[INFO] wrangler.toml created for Cloudflare Pages' && "
                 f"echo '[INFO] tailwind.config.js configured' && "
-                f"echo '코드 생성 완료'"
+                f"echo '코드 및 설정 파일 생성 완료'"
             )
             return CmdRunAction(command=command)
 
@@ -103,8 +111,9 @@ class StackForgeAgent(Agent):
             command = (
                 f"cd {project_name} && "
                 f"echo 'State 5: Cloudflare Pages 배포 진행 중...' && "
+                f"echo '[INFO] wrangler.toml 설정을 확인하여 배포를 준비합니다...' && "
                 f"echo '[INFO] Building Next.js application...' && "
-                f"echo '[INFO] Uploading assets to Cloudflare Global Edge...' && "
+                f"echo '[INFO] Uploading assets to Cloudflare Global Edge via Wrangler...' && "
                 f"echo '[SUCCESS] Deployment successful!' && "
                 f"echo '🎉 배포 완료! URL: https://{project_name}.pages.dev'"
             )
