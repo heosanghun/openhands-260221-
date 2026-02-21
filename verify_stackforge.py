@@ -15,6 +15,7 @@ try:
         # 1. Create action
         action = StartStackForgeBuildAction(
             project_name="test-project",
+            project_description="test-description",
             supabase_token="sb_test",
             cloudflare_token="cf_test",
             polar_api_key="polar_test"
@@ -28,6 +29,7 @@ try:
         print(f"Serialized data: {data}")
         assert data['action'] == 'start_stackforge_build'
         assert data['args']['project_name'] == "test-project"
+        assert data['args']['project_description'] == "test-description"
 
         # 3. Deserialize from dict
         # We need to simulate the structure expected by action_from_dict
@@ -35,6 +37,7 @@ try:
             'action': 'start_stackforge_build',
             'args': {
                 'project_name': 'test-project',
+                'project_description': 'test-description',
                 'supabase_token': 'sb_test',
                 'cloudflare_token': 'cf_test',
                 'polar_api_key': 'polar_test'

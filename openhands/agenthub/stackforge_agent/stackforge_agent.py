@@ -27,6 +27,7 @@ class StackForgeAgent(Agent):
                 if isinstance(event, StartStackForgeBuildAction):
                     config = {
                         'project_name': event.project_name,
+                        'project_description': event.project_description,
                         'supabase_token': event.supabase_token,
                         'cloudflare_token': event.cloudflare_token,
                         'polar_api_key': event.polar_api_key
@@ -41,11 +42,13 @@ class StackForgeAgent(Agent):
         logger.info(f'[StackForgeAgent] Processing Step: {current_step}')
 
         project_name = config.get('project_name', 'my-stackforge-app')
+        project_description = config.get('project_description', 'A SaaS application built with StackForge')
 
         if current_step == 'INIT':
             state.extra_data['stackforge_step'] = 'PROVISION_SUPABASE'
             env_content = (
                 f"PROJECT_NAME={project_name}\n"
+                f"PROJECT_DESCRIPTION={project_description}\n"
                 f"SUPABASE_ACCESS_TOKEN={config.get('supabase_token')}\n"
                 f"CLOUDFLARE_API_TOKEN={config.get('cloudflare_token')}\n"
                 f"POLAR_API_KEY={config.get('polar_api_key')}\n"
@@ -91,17 +94,17 @@ class StackForgeAgent(Agent):
                 f'pages_build_output_dir = ".next"\n\n'
                 f'[vars]\n'
                 f'PROJECT_NAME = "{project_name}"\n'
+                f'PROJECT_DESCRIPTION = "{project_description}"\n'
             )
             command = (
                 f"cd {project_name} && "
-                f"echo 'State 4: Next.js 보일러플레이트 및 wrangler.toml 생성 중...' && "
+                f"echo 'State 4: {project_description} 서비스 코드 생성 중...' && "
                 f"mkdir -p src/app src/components src/lib && "
                 f"echo \"import {{ createClient }} from '@supabase/supabase-js';\nexport const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);\" > src/lib/supabase.ts && "
-                f"echo \"export default function Home() {{ return <div className='p-20 text-center'><h1>{{process.env.PROJECT_NAME}} - Powered by StackForge</h1><p>Welcome to your new SaaS!</p></div>; }}\" > src/app/page.tsx && "
+                f"echo \"export default function Home() {{ return <div className='p-20 text-center text-white'><h1>{{process.env.PROJECT_NAME}} - Powered by StackForge</h1><p>{{process.env.PROJECT_DESCRIPTION}}</p><div className='mt-10 p-5 bg-slate-800 rounded'>입력하신 정보로 사주팔자 분석을 시작합니다.</div></div>; }}\" > src/app/page.tsx && "
                 f"cat <<EOF > wrangler.toml\n{wrangler_content}EOF\n && "
-                f"echo '[INFO] package.json created' && "
+                f"echo '[INFO] {project_name} service code generated base on: {project_description}' && "
                 f"echo '[INFO] wrangler.toml created for Cloudflare Pages' && "
-                f"echo '[INFO] tailwind.config.js configured' && "
                 f"echo '코드 및 설정 파일 생성 완료'"
             )
             return CmdRunAction(command=command)

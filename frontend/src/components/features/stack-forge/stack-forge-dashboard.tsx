@@ -8,6 +8,7 @@ interface StackForgeDashboardProps {
 
 export const StackForgeDashboard: React.FC<StackForgeDashboardProps> = () => {
   const [projectName, setProjectName] = React.useState("");
+  const [projectDescription, setProjectDescription] = React.useState("");
   const [supabaseToken, setSupabaseToken] = React.useState("");
   const [cloudflareToken, setCloudflareToken] = React.useState("");
   const [polarApiKey, setPolarApiKey] = React.useState("");
@@ -26,6 +27,7 @@ export const StackForgeDashboard: React.FC<StackForgeDashboardProps> = () => {
       action: ActionType.START_STACKFORGE_BUILD,
       args: {
         project_name: projectName,
+        project_description: projectDescription,
         supabase_token: supabaseToken,
         cloudflare_token: cloudflareToken,
         polar_api_key: polarApiKey,
@@ -62,6 +64,19 @@ export const StackForgeDashboard: React.FC<StackForgeDashboardProps> = () => {
               onChange={(e) => setProjectName(e.target.value)}
               placeholder="my-awesome-saas"
               className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none text-white placeholder-slate-500"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="project-description" className="block text-sm font-medium text-slate-300">
+              구축하고 싶은 서비스 설명 (프롬프트)
+            </label>
+            <textarea
+              id="project-description"
+              value={projectDescription}
+              onChange={(e) => setProjectDescription(e.target.value)}
+              placeholder="예: 이름, 생년월일, 태어난 시를 입력받아 사주팔자를 풀이해주고 이메일로 발송해주는 서비스"
+              className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none text-white placeholder-slate-500 min-h-[100px]"
             />
           </div>
 

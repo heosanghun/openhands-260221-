@@ -5,6 +5,7 @@ from openhands.events.action.action import Action
 @dataclass
 class StartStackForgeBuildAction(Action):
     project_name: str
+    project_description: str
     supabase_token: str
     cloudflare_token: str
     polar_api_key: str
