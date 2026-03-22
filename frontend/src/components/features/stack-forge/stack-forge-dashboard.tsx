@@ -2,12 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useConversationWebSocket } from "#/contexts/conversation-websocket-context";
 import ActionType from "#/types/action-type";
-
 import { I18nKey } from "#/i18n/declaration";
-
-interface StackForgeDashboardProps {
-  // Add props if needed
-}
 
 interface StackForgeDashboardProps {
   // Add props if needed
